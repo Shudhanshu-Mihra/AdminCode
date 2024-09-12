@@ -111,7 +111,7 @@ declare global {
     net?: number | null;
     photos?: string[];
     receipt_date?: Date | null | string;
-    status?: string | null;
+    status?: string | null ;
     supplier?: string | null;
     supplier_account?: string | null;
     tax?: number | null;
@@ -121,7 +121,6 @@ declare global {
     payment_status?: boolean;
     approve_status?: boolean;
     publish_status?: boolean;
-    type?: string;
   }
 
   interface IPaginationPanelProps {

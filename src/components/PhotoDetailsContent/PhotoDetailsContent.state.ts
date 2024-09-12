@@ -234,7 +234,11 @@ export const usePhotoDetailsContentState = () => {
     formattedDate: selectedReciept?.created 
       ? format(new Date(selectedReciept.created), DATE_FORMATS[0].value)
       : '',
-    status:selectedReciept?.status || ''
+    status: selectedReciept?.status || '',
+    vat: selectedReciept?.vat_code || '',
+    total: selectedReciept?.total || '',
+    tax: selectedReciept?.tax || '',
+      supplier:selectedReciept?.type_user || ''
   });
 
   const [buttonValue, setButtonValue] = useState('');
@@ -249,7 +253,11 @@ export const usePhotoDetailsContentState = () => {
         formattedDate: selectedReciept.created 
           ? format(new Date(selectedReciept.created), DATE_FORMATS[0].value)
           : '',
-          status:selectedReciept?.status
+        status: selectedReciept.status || '',
+        vat: selectedReciept.vat_code || '',
+        total: selectedReciept.total || '',
+        tax: selectedReciept.tax ||  '',
+        supplier:selectedReciept.type_user || ''
         
       });
     }
@@ -293,11 +301,11 @@ export const usePhotoDetailsContentState = () => {
     try {
       const payload = {
         id: selectedReciept?.id || '',
-        // currency: state.currencyValue,
-        // vat_code: selectedReciept?.vat_code || '',
-        // receipt_date:  state.dateValue || selectedReciept?.created ,
-        type:selectedReciept?.type ||''
-        // status:  state.dateValue || selectedReciept?.created ,
+        currency: state.currencyValue,
+        vat_code: selectedReciept?.vat_code || '',
+        receipt_date:  state.dateValue || selectedReciept?.created ,
+        // type:selectedReciept?.type ||''
+        status:  state.status || selectedReciept?.created ,
       };
 
       setIsLoading(true);

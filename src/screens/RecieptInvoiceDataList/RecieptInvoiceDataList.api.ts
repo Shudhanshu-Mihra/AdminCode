@@ -5,8 +5,8 @@ import { apiServices } from 'services/api-service';
 import { CONFIG } from 'constants/config';
 
 export const updateReceiptItem = (payload: IUpdateReceiptItemPayload) => {
-  // const URL = 'receipt/update';
-  const URL = `/admin/uploads/${payload.type}/${payload.id}/reviewed`;
+  const URL = 'receipt/update';
+  // const URL = `/admin/uploads/${payload.type}/${payload.id}/reviewed`;
   return apiServices.updateData(URL, payload);
 };
 
