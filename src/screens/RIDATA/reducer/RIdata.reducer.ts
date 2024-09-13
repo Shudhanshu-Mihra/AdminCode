@@ -23,6 +23,7 @@ export const RIDATA_INITIAL_STATE: IRIDATA_INITIAL_STATE = {
       type_date: null,
       type_user: null,
       type: "",
+      type_currency:''
     },
   ],
   selectedReciept: null,

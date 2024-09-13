@@ -1,5 +1,5 @@
-import { FC, useEffect, memo } from "react";
-import { useDispatch, useSelector } from 'react-redux';
+import { FC, useEffect, memo ,useState } from "react";
+import { useDispatch, useSelector  } from 'react-redux';
 import { StatusBar } from "../StatusBar";
 import { ButtonsBox } from "../ButtonsBox";
 import { FieldsBox } from "./FieldsBox";
@@ -27,22 +27,31 @@ interface ChildProps {
 	getLivePublish:(what: boolean | undefined) => void;
 }
 
+interface Item {
+	description: string;
+	vatCode: number;
+	units: number;
+	price: number;
+	net: number;
+	vat: number;
+	total: number;
+  }
 export const PhotoDetailsContent: FC<ChildProps> = memo((props) => {
 	const { changePaid, fnChangePaid, actionValue, fnGetPayStatus } = props;
 	const { changePublish, fnChangePublish, newPublish, getLivePublish } = props;
 	// console.log("!!!!!!!!!!!!!!!!! - RDContent child-form", actionValue);
 	// const {changePaid} = props;
 	const {
+		state,
 	// 	selectedReciept
 	// 	inputFields,
 	// 	// receiptItem,
 	// 	statusValue,
 	// 	paymentStatus,
 	// 	// receiptid,
-		dateValue,
+		type_date,
 		isOpen,
 		isLoading,
-		formattedDate,
 		datePickerRef,
 		saveReceiptHandler,
 		onChangeRadioButtonHandler,
@@ -51,20 +60,36 @@ export const PhotoDetailsContent: FC<ChildProps> = memo((props) => {
 		onDatePickerClickHandler,
 	// 	// onGetAllMasterItemsHandler,
 		onForbiddenCharacterClick,
-
+		handleFieldChange,
+		onChangeDate
 	// 	paymentStatusFromState,
 	// 	publishStatusFromState,
 	// 	onChangePaymentStatus,
 	// 	paymentStatusHandler,
 	// 	publishStatusHandler,
-	// 	onChangePublishStatus,
+		// 	onChangePublishStatus,
+		// onFieldChange
 	} = usePhotoDetailsContentState();
 	
+	// const [inputFieldsState, setInputFieldsState] = useState({
+	// 	supplier: '',
+	// 	type_date: '',
+	// 	currencyValue: '',
+	// 	// Add other fields as necessary
+	// });
+
+	const [purchaseItems, setPurchaseItems] = useState<Item[]>([
+		{ description: "", vatCode: 0, units: 0, price: 0, net: 0, vat: 0, total: 0 }
+	  ]);
+
 	const {
-		
 		    RIdata: { selectedReciept }
 		  } = useSelector((state: IState) => state);
 
+		  const handlePurchaseItemsChange = (updatedItems: Item[]) => {
+			setPurchaseItems(updatedItems);
+	};
+	
 	useEffect(() => {
 		// if (changePaid) {
 		// 	// console.log('chnage in paid&&&&&&', changePaid);
@@ -115,20 +140,24 @@ export const PhotoDetailsContent: FC<ChildProps> = memo((props) => {
 
 			<Styled.FormFieldWrapper>
 				<FieldsBox
-					inputFields={selectedReciept}
+					inputFields={state}
+					// inputFields={selectedReciept}
 					onDatePickerClickHandler={onDatePickerClickHandler}
 					onClickOutsideDatePickerHandler={onClickOutsideDatePickerHandler}
 					isOpen={isOpen}
-					formattedDate={formattedDate}
+					onDateChange={ onChangeDate}
+					formattedDate={state.formattedDate}
 					datePickerRef={datePickerRef}
-					selectedDate={dateValue ? new Date(dateValue) : null}
+					selectedDate={type_date ? new Date(type_date) : null}
 					onForbiddenCharacterClick={onForbiddenCharacterClick}
+					onFieldChange={handleFieldChange}
 				/>
 			</Styled.FormFieldWrapper>
 			<Styled.ReceiptItemTable>
 				<h4>Details</h4>
 			{/* {selectedReciept.map((items) => <Styled.items>{items}</Styled.items>): 'no data'} */}
-				<PurchaseTable inputFields={selectedReciept}/>
+				{/* <PurchaseTable inputFields={selectedReciept}/> */}
+				<PurchaseTable inputFields={state} items={purchaseItems} onItemsChange={handlePurchaseItemsChange}/>
 			</Styled.ReceiptItemTable>
 			{/* <Styled.ReceiptStatusContainer>
 				<Styled.CheckboxContainer>

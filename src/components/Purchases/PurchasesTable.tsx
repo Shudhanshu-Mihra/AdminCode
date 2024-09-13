@@ -188,7 +188,17 @@ interface Item {
 }
 
 interface IFieldsBox {
-  inputFields: IRecieptInvoiceData | null;
+  inputFields: {
+    currencyValue: string;
+    type_date: string | Date;
+    formattedDate: string;
+    status: string;
+    vat: string;
+    total: string;
+    tax: string;
+    net: string;
+    supplier: string;
+    recieptId: string;} | null;
 }
 
 const PurchaseTable: FC <IFieldsBox> = (props) => {
@@ -222,17 +232,29 @@ const PurchaseTable: FC <IFieldsBox> = (props) => {
     setItems(updatedItems);
   };
 
-//   const handleInputChange = (
-//     event:ChangeEvent<HTMLInputElement>,
-//     field: string
-//   ) => {
-//     setReceiptData((prevState) => ({
-//       ...prevState,
-//       [field]: event.target.value,
-// 	  }));
-// 	//   console.log("field :---",field , "event :---" , event);
-//   };
+  // const handleInputChange = (
+  //   event:ChangeEvent<HTMLInputElement>,
+  //   field: string
+  // ) => {
+  //   setReceiptData((prevState) => ({
+  //     ...prevState,
+  //     [field]: event.target.value,
+	//   }));
+	// //   console.log("field :---",field , "event :---" , event);
+  // };
 
+  const onChange = (e: React.ChangeEvent<HTMLInputElement>, index: number) => {
+    const newValue = e.target.value;
+    
+    // Create a new array with the updated value for the specific input
+    const updatedArray = inputFieldsArray.map((item, idx) => 
+      idx === index ? { ...item, value: newValue } : item
+    );
+    
+    // setInputFieldsArray(updatedArray);  // Update state with new array
+    console.log("updatedArray::--",updatedArray); 
+
+  };
   const addItem = () => {
     setItems([
       ...items,
@@ -370,14 +392,22 @@ const PurchaseTable: FC <IFieldsBox> = (props) => {
             <Styled.InputWrapper key={item.label}>
               <Styled.Label>{item.label}</Styled.Label>
               <Styled.InputDiv>
-                <Input
+                {/* <Input
                   value={item.value}
                   inputType={item.inputType}
-                //   onChangeValue={item.onChange}
+                  onChangeValue={onChange}
                   isHiddenLabel
                   isNoMargin
                   isRemoveBorder
-                />
+                /> */}
+                <Input
+            value={item.value}
+            inputType={item.inputType}
+            onChangeValue={(e) => onChange(e, index)}  // Pass the index to onChange handler
+            isHiddenLabel
+            isNoMargin
+            isRemoveBorder
+          />
               </Styled.InputDiv>
             </Styled.InputWrapper>
           ))}

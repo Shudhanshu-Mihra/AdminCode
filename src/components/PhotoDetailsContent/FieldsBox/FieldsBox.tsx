@@ -344,20 +344,42 @@ import { PhotoDetailsContentItem } from '../PhotoDetailsContentItem';
 
 // Define the custom labels for each field
 const FIELD_LABELS: { [key: string]: string } = {
-  type_user: 'Supplier',
+  supplier: 'Supplier',
   type_date: 'Date',
-  type_currency: 'Currency',
+  currencyValue: 'Currency',
   net: 'Net Amount',
-  vat_code: 'VAT Code',
+  vat: 'VAT Code',
   tax: 'Tax Amount',
   total: 'Total Amount',
 };
 
 // Define the fields to display
-const FIELDS_TO_DISPLAY = ['type_user', 'type_date', 'type_currency'];
+const FIELDS_TO_DISPLAY = ['supplier', 'type_date', 'currencyValue'];
+
+export interface IFieldsState{
+  // id: string ;
+  // custom_id: string  ;
+  // type_currency: string ;
+  // created: string  ;
+  // status: string  ;
+  // vat_code: string ;
+  // total: string  ;
+  // tax: string  ;
+  // type_user: string  ;
+  currencyValue: string;
+  type_date: string | Date;
+  formattedDate: string;
+  status: string;
+  vat: string;
+  total: string;
+  tax: string;
+  supplier: string;
+  recieptId: string;
+}
 
 interface IFieldsBox {
-  inputFields: IRecieptInvoiceData | null;
+  // inputFields: IRecieptInvoiceData | null;
+  inputFields: IFieldsState | null;
   onForbiddenCharacterClick?: (event: React.KeyboardEvent<Element>) => void;
   onFieldChange?: (fieldName: string, value: string) => void; // Added handler for field changes
   formattedDate?: string;
@@ -365,10 +387,11 @@ interface IFieldsBox {
   isOpen?: boolean;
   datePickerRef?: React.RefObject<HTMLButtonElement> | undefined;
   onClickOutsideDatePickerHandler?: ((event: React.MouseEvent<HTMLDivElement>) => void) | undefined;
-  selectedDate?: Date | null | undefined
+  selectedDate?: Date | null | undefined;
+  onDateChange?: ((date: Date) => void) | undefined;
 }
 
-export const FieldsBox: FC<IFieldsBox> = ({
+export const  FieldsBox: FC<IFieldsBox> = ({
   inputFields,
   onForbiddenCharacterClick,
   formattedDate,
@@ -377,14 +400,27 @@ export const FieldsBox: FC<IFieldsBox> = ({
   isOpen,
   datePickerRef,
   onClickOutsideDatePickerHandler,
-  selectedDate
+  selectedDate,
+  onDateChange
 }) => {
 
-  const handleFieldChange = (fieldName: string) => (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (onFieldChange) {
-      onFieldChange(fieldName, e.target.value);
-    }
-  };
+
+  // console.log("inputFields:-" , inputFields);
+  // const handleFieldChange = (fieldName: string) => (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLInputElement>) => {
+  //   // console.log("fieldName:- ",fieldName ,"event.target.value:- ",event.target.value);
+
+  //   if (onFieldChange) {
+  //     console.log("onFieldChange:- ",onFieldChange);
+  //     onFieldChange(fieldName, event.target.value);
+  //     console.log("fieldName:- ",fieldName, "event.target.value:- ",event.target.value);
+
+  //   }
+  // };
+  const handleFieldChange = (fieldName: string) => (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLInputElement>) => {
+		if (onFieldChange) {
+			onFieldChange(fieldName, event.target.value); // Call the handler passed from parent
+		}
+	};
 
   return (
     <Styled.Container>
@@ -398,7 +434,7 @@ export const FieldsBox: FC<IFieldsBox> = ({
               {key === 'type_date' ? (
                 <CustomDatePicker
                   isInputDate
-                  // onChange={item.onChangeDate} // Ensure item.onChangeDate is properly defined
+                  onChange={onDateChange} // Ensure item.onChangeDate is properly defined
                   onDatePickerClickHandler={onDatePickerClickHandler} // Ensure this handler is defined
                   onClickOutsideDatePickerHandler={onClickOutsideDatePickerHandler} // Ensure this handler is defined
                   isDatePickerOpen={isOpen} // Ensure isOpen is properly defined
@@ -407,11 +443,14 @@ export const FieldsBox: FC<IFieldsBox> = ({
                   datePickerRef={datePickerRef} // Ensure datePickerRef is properly defined
                 />
               ) : (
+                  
                 <Input
-                  // text={FIELD_LABELS[key] || key}
+                    // text={FIELD_LABELS[key] || key}
+                    isDisabled={false}
                     value={typeof value === 'string' ? value : String(value)}
                     onKeyDown={onForbiddenCharacterClick}
                     onChangeValue={handleFieldChange(key)}
+                    // onChangeValue={handleFieldChange(key)}
                   // inputName={key}
                    // Assuming `isInputDate` is dependent on the key
                 />

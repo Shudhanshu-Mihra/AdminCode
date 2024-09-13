@@ -108,14 +108,14 @@ declare global {
     currency?: string | null;
     description?: string | null;
     custom_id?: string | null;
-    net?: number | null;
+    net?: string|number | null;
     photos?: string[];
     receipt_date?: Date | null | string;
     status?: string | null ;
     supplier?: string | null;
     supplier_account?: string | null;
-    tax?: number | null;
-    total?: number | null;
+    tax?: string | null;
+    total?: string | null;
     payment_type?: string | null;
     vat_code?: string | null;
     payment_status?: boolean;

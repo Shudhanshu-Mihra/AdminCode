@@ -214,7 +214,7 @@
 
 
 import { ROUTES } from 'constants/routes';
-import React, { useEffect, useState ,useRef } from 'react';
+import React, { useEffect, useState ,useRef, ChangeEvent } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { updateReceiptItem } from 'screens/RecieptInvoiceDataList/RecieptInvoiceDataList.api';
@@ -230,7 +230,7 @@ export const usePhotoDetailsContentState = () => {
   // Update state type to reflect Date values
   const [state, setState] = useState({
     currencyValue: selectedReciept?.type_currency || '',
-    dateValue: selectedReciept?.created ? new Date(selectedReciept.created) : null,
+    type_date: selectedReciept?.created ? new Date(selectedReciept.created) : '',
     formattedDate: selectedReciept?.created 
       ? format(new Date(selectedReciept.created), DATE_FORMATS[0].value)
       : '',
@@ -238,7 +238,9 @@ export const usePhotoDetailsContentState = () => {
     vat: selectedReciept?.vat_code || '',
     total: selectedReciept?.total || '',
     tax: selectedReciept?.tax || '',
-      supplier:selectedReciept?.type_user || ''
+    net:selectedReciept?.net || '',
+    supplier: selectedReciept?.type_user || '',
+      recieptId: selectedReciept?.custom_id || ''
   });
 
   const [buttonValue, setButtonValue] = useState('');
@@ -249,16 +251,17 @@ export const usePhotoDetailsContentState = () => {
     if (selectedReciept) {
       setState({
         currencyValue: selectedReciept.type_currency || '',
-        dateValue: selectedReciept.created ? new Date(selectedReciept.created) : null,
+        type_date: selectedReciept.created ? new Date(selectedReciept.created) : '',
         formattedDate: selectedReciept.created 
           ? format(new Date(selectedReciept.created), DATE_FORMATS[0].value)
           : '',
         status: selectedReciept.status || '',
         vat: selectedReciept.vat_code || '',
         total: selectedReciept.total || '',
-        tax: selectedReciept.tax ||  '',
-        supplier:selectedReciept.type_user || ''
-        
+        tax: selectedReciept.tax || '',
+        net:selectedReciept.net || '',
+        supplier:selectedReciept.type_user || '',
+        recieptId: selectedReciept.custom_id || ''
       });
     }
   }, [selectedReciept?.id]);
@@ -281,13 +284,13 @@ export const usePhotoDetailsContentState = () => {
   };
 
   const onChangeDate = (date: Date) => {
-    // setIsOpen(!isOpen);
+    setIsOpen(!isOpen);
     setState(prevState => ({
       ...prevState,
-      dateValue: date,
-      formattedDate: format(date, DATE_FORMATS[0].value)
+      formattedDate: format(date, DATE_FORMATS[0].value),
+      type_date:date
     }));
-    console.log("Selected Date:", date); // Raw date object
+    console.log("Selected Date:", state.type_date); // Raw date object
   console.log("Formatted Date:", format(date, DATE_FORMATS[0].value)); // Formatted date
   };
 
@@ -301,11 +304,14 @@ export const usePhotoDetailsContentState = () => {
     try {
       const payload = {
         id: selectedReciept?.id || '',
-        currency: state.currencyValue,
-        vat_code: selectedReciept?.vat_code || '',
-        receipt_date:  state.dateValue || selectedReciept?.created ,
+        currency: state.currencyValue || selectedReciept?.type_currency,
+        vat_code: state.vat || selectedReciept?.vat_code,
+        receipt_date:  state.type_date || selectedReciept?.created ,
         // type:selectedReciept?.type ||''
-        status:  state.status || selectedReciept?.created ,
+        status: 'review',
+        net: state.net || selectedReciept?.net,
+        tax: state.tax || selectedReciept?.tax,
+        total:state.total || selectedReciept?.total
       };
 
       setIsLoading(true);
@@ -327,9 +333,28 @@ export const usePhotoDetailsContentState = () => {
   };
   const datePickerRef = useRef<HTMLButtonElement>(null);
 
-  console.log("sstate-----",state);
+  const handleFieldChange = (fieldName: string, value: string) => {
+		setState((prevState) => ({
+			...prevState,
+			[fieldName]: value,
+		}));
+		
+	};
+  
+
+  const handleInputChange = (
+    event:ChangeEvent<HTMLInputElement>,
+    field: string
+  ) => {
+    setState((prevState) => ({
+      ...prevState,
+      [field]: event.target.value,
+	  }));
+	  console.log("field :---",field , "event :---" , event);
+  };
   return {
     ...state,
+    state,
     isLoading,
     isOpen,
     onChangeDate,
@@ -339,6 +364,9 @@ export const usePhotoDetailsContentState = () => {
     onDatePickerClickHandler,
     datePickerRef,
     onClickOutsideDatePickerHandler,
-    onForbiddenCharacterClick
+    onForbiddenCharacterClick,
+    handleFieldChange,
+    handleInputChange
+    
   };
 };

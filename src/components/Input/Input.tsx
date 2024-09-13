@@ -64,7 +64,9 @@ export const Input: React.FC<InputProps> = (props) => {
     // datePickerRef,
     // onChangeDate
   } = props;
-  console.log("isInputDate" , isInputDate);
+
+  console.log("isInputDate", isInputDate);
+  
   return (
     <Styled.InputWrapper data-testid="input-component" isNoMargin={isNoMargin}>
       {isHiddenLabel ? null : <Styled.Label>{text}{textCode}</Styled.Label>}
@@ -98,6 +100,7 @@ export const Input: React.FC<InputProps> = (props) => {
               onFocus={onFocus}
               name={inputName}
               value={value}
+              // onChange={onChangeValue}
               onChange={onChangeValue}
               onKeyDown={onKeyDown}
               placeholder={placeHolder}
